@@ -1,0 +1,2 @@
+herbaccara.boot.autoconfigure.prevent.PreventDuplicateRequestFilterAutoConfiguration
+herbaccara.boot.autoconfigure.prevent.PreventTimeLimitRequestFilterAutoConfiguration
