@@ -1,4 +1,4 @@
-package herbaccara.boot.autoconfigure.prevent
+package herbaccara.boot.autoconfigure.prevent.timelimit
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import herbaccara.prevent.timelimit.PreventTimeLimitRequestFilter
@@ -25,7 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.time.LocalDateTime
 
 @AutoConfiguration
-@EnableConfigurationProperties(PreventRequestFilterProperties::class)
+@EnableConfigurationProperties(PreventTimeLimitRequestFilterProperties::class)
 class PreventTimeLimitRequestFilterAutoConfiguration {
 
     private fun patternsConditionUrls(mappingInfo: RequestMappingInfo): Set<String> {
@@ -40,10 +40,8 @@ class PreventTimeLimitRequestFilterAutoConfiguration {
     fun preventTimeLimitRequestFilter(
         requestMappingHandlerMapping: RequestMappingHandlerMapping,
         storage: PreventTimeLimitRequestStorage,
-        properties: PreventRequestFilterProperties
+        properties: PreventTimeLimitRequestFilterProperties
     ): FilterRegistrationBean<Filter> {
-        val timeLimitProperties = properties.timeLimit
-
         val urlPatterns = requestMappingHandlerMapping.handlerMethods
             .flatMap { (mappingInfo, handlerMethod) ->
                 val preventTimeLimit = handlerMethod.getMethodAnnotation(PreventTimeLimit::class.java)
@@ -58,20 +56,20 @@ class PreventTimeLimitRequestFilterAutoConfiguration {
             }
             .toSet()
 
-        val defaultGlobalTimeout = timeLimitProperties.defaultGlobalTimeout
-        val globalTimeouts = timeLimitProperties.globalTimeouts
+        val defaultGlobalTimeout = properties.defaultGlobalTimeout
+        val globalTimeouts = properties.globalTimeouts
 
         val filter = PreventTimeLimitRequestFilter(
             requestMappingHandlerMapping,
             storage,
             { globalTimeouts[it] ?: defaultGlobalTimeout },
-            HttpStatus.valueOf(timeLimitProperties.errorStatusCode),
-            timeLimitProperties.errorMessage
+            HttpStatus.valueOf(properties.errorStatusCode),
+            properties.errorMessage
         )
 
         return FilterRegistrationBean<Filter>().apply {
             setFilter(filter)
-            order = timeLimitProperties.order
+            order = properties.order
             setUrlPatterns(urlPatterns)
         }
     }

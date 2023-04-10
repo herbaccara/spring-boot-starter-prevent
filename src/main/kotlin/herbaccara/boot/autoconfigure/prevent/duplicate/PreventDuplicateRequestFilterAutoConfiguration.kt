@@ -1,4 +1,4 @@
-package herbaccara.boot.autoconfigure.prevent
+package herbaccara.boot.autoconfigure.prevent.duplicate
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import herbaccara.prevent.duplicate.PreventDuplicateRequestFilter
@@ -25,7 +25,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 @AutoConfiguration
-@EnableConfigurationProperties(PreventRequestFilterProperties::class)
+@EnableConfigurationProperties(PreventDuplicateRequestFilterProperties::class)
 class PreventDuplicateRequestFilterAutoConfiguration {
 
     @Bean
@@ -39,38 +39,36 @@ class PreventDuplicateRequestFilterAutoConfiguration {
         requestMappingHandlerMapping: RequestMappingHandlerMapping,
         predicate: PreventDuplicateRequestPredicate,
         identityStrategy: IdentityStrategy,
-        properties: PreventRequestFilterProperties
+        properties: PreventDuplicateRequestFilterProperties
     ): FilterRegistrationBean<Filter> {
-        val duplicateProperties = properties.duplicate
-
         val filter = PreventDuplicateRequestFilter(
             requestMappingHandlerMapping,
             predicate,
             identityStrategy,
-            duplicateProperties.preventHttpMethods,
-            duplicateProperties.requestUriType,
-            duplicateProperties.withQueryString,
-            HttpStatus.valueOf(duplicateProperties.errorStatusCode),
-            duplicateProperties.errorMessage
+            properties.preventHttpMethods,
+            properties.requestUriType,
+            properties.withQueryString,
+            HttpStatus.valueOf(properties.errorStatusCode),
+            properties.errorMessage
         )
 
         return FilterRegistrationBean<Filter>().apply {
             setFilter(filter)
-            order = duplicateProperties.order
-            addUrlPatterns(*duplicateProperties.urlPatterns.toTypedArray())
+            order = properties.order
+            addUrlPatterns(*properties.urlPatterns.toTypedArray())
         }
     }
 
     @Bean
     @ConditionalOnMissingBean
-    fun preventDuplicateRequestLocalPredicate(properties: PreventRequestFilterProperties): PreventDuplicateRequestPredicate {
-        return PreventDuplicateRequestLocalPredicate(properties.duplicate.timeout)
+    fun preventDuplicateRequestLocalPredicate(properties: PreventDuplicateRequestFilterProperties): PreventDuplicateRequestPredicate {
+        return PreventDuplicateRequestLocalPredicate(properties.timeout)
     }
 
     @Bean
     @ConditionalOnProperty(prefix = "spring", name = ["cache.type"], havingValue = "caffeine")
-    fun preventDuplicateRequestCaffeinePredicate(properties: PreventRequestFilterProperties): PreventDuplicateRequestPredicate {
-        return PreventDuplicateRequestCaffeinePredicate(properties.duplicate.timeout)
+    fun preventDuplicateRequestCaffeinePredicate(properties: PreventDuplicateRequestFilterProperties): PreventDuplicateRequestPredicate {
+        return PreventDuplicateRequestCaffeinePredicate(properties.timeout)
     }
 
     @AutoConfiguration
@@ -81,9 +79,9 @@ class PreventDuplicateRequestFilterAutoConfiguration {
         fun preventDuplicateRequestRedisPredicate(
             @Qualifier("preventDuplicateRequestRedisTemplate")
             redisTemplate: RedisTemplate<PreventDuplicateRequestKey, String>,
-            properties: PreventRequestFilterProperties
+            properties: PreventDuplicateRequestFilterProperties
         ): PreventDuplicateRequestPredicate {
-            return PreventDuplicateRequestRedisPredicate(properties.duplicate.timeout, redisTemplate)
+            return PreventDuplicateRequestRedisPredicate(properties.timeout, redisTemplate)
         }
 
         @Bean
