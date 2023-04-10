@@ -9,8 +9,8 @@ import java.time.Duration
 
 @ConfigurationProperties(prefix = "prevent")
 data class PreventRequestFilterProperties(
-    val duplicate: DuplicateProperties,
-    val timeLimit: TimeLimitProperties
+    val duplicate: DuplicateProperties = DuplicateProperties(),
+    val timeLimit: TimeLimitProperties = TimeLimitProperties()
 ) {
     data class DuplicateProperties(
         val timeout: Duration = PreventDuplicateRequestFilter.DEFAULT_TIMEOUT,
