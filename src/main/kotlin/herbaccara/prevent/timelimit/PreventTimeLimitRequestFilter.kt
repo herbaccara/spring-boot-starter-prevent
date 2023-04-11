@@ -27,8 +27,11 @@ class PreventTimeLimitRequestFilter(
 
     companion object {
         const val DEFAULT_FILTER_ORDER: Int = 20
-        val DEFAULT_GLOBAL_TIMEOUT: Duration = Duration.ofSeconds(30)
-        val DEFAULT_ERROR_STATUS_CODE: HttpStatus = HttpStatus.CONFLICT
+
+        @JvmField val DEFAULT_GLOBAL_TIMEOUT: Duration = Duration.ofSeconds(30)
+
+        @JvmField val DEFAULT_ERROR_STATUS_CODE: HttpStatus = HttpStatus.CONFLICT
+
         const val DEFAULT_ERROR_MESSAGE: String = "Please try again in %,d seconds."
     }
 

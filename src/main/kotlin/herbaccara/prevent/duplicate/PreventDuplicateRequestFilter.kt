@@ -27,11 +27,17 @@ open class PreventDuplicateRequestFilter @JvmOverloads constructor(
 
     companion object {
         const val DEFAULT_FILTER_ORDER = 10
-        val DEFAULT_TIMEOUT: Duration = Duration.ofSeconds(3)
-        val DEFAULT_PREVENT_HTTP_METHODS: List<HttpMethod> = listOf(POST, PUT, PATCH, DELETE)
-        val DEFAULT_REQUEST_URI_TYPE: RequestUriType = RequestUriType.RAW
+
+        @JvmField val DEFAULT_TIMEOUT: Duration = Duration.ofSeconds(3)
+
+        @JvmField val DEFAULT_PREVENT_HTTP_METHODS: List<HttpMethod> = listOf(POST, PUT, PATCH, DELETE)
+
+        @JvmField val DEFAULT_REQUEST_URI_TYPE: RequestUriType = RequestUriType.RAW
+
         const val DEFAULT_WITH_QUERY_STRING: Boolean = false
-        val DEFAULT_ERROR_STATUS_CODE: HttpStatus = HttpStatus.CONFLICT
+
+        @JvmField val DEFAULT_ERROR_STATUS_CODE: HttpStatus = HttpStatus.CONFLICT
+
         const val DEFAULT_ERROR_MESSAGE: String = "Please try again later."
     }
 
