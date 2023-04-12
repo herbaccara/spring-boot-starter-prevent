@@ -45,7 +45,7 @@ class PreventTimeLimitRequestFilter(
             .joinToString("-") { String.format("%02X", it) }
     }
 
-    private fun isDuplicate(scope: Scope, identity: String, sec: Long): Pair<Boolean, Long?> {
+    private fun isDuplicate(scope: Scope, identity: String, sec: Long): Pair<Boolean, Long> {
         val now = LocalDateTime.now()
 
         val key = PreventTimeLimitRequestKey(scope, ip, mac, identity)
@@ -58,7 +58,7 @@ class PreventTimeLimitRequestFilter(
         }
 
         storage.put(key, now)
-        return false to null
+        return false to 0
     }
 
     override fun doFilterInternal(
