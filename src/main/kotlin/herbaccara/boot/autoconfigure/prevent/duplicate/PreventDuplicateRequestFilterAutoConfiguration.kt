@@ -12,6 +12,7 @@ import herbaccara.prevent.duplicate.predicate.PreventDuplicateRequestRedisPredic
 import jakarta.servlet.Filter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -22,9 +23,11 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.http.HttpStatus
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 @AutoConfiguration
+@ConditionalOnClass(WebMvcConfigurer::class)
 @EnableConfigurationProperties(PreventDuplicateRequestFilterProperties::class)
 class PreventDuplicateRequestFilterAutoConfiguration {
 
